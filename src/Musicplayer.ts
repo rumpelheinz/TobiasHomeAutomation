@@ -1,0 +1,1 @@
+export function logtest() { console.log("testtest"); }

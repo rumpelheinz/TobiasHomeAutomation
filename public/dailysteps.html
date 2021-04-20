@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<style>
+  body {
+    margin: 0px;
+    padding: 0px;
+  }
+
+  ;
+
+  #myChart {
+    background: red;
+    min-height: 647px;
+  }
+
+  #home {
+    position: absolute;
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    background-color: rgb(64, 77, 82);
+  }
+  #home :hover {
+  background-color: #ddd;
+  color: black;
+}
+#home a{
+  color:#f2f2f2
+}
+</style>
+
+<body>
+  <div id="home" class="home">
+    <a href="/"> <i class="fas fa-home" style="text-align: left;"></i></a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <!-- <div id="output" style="display:none">test</div> -->
+  <canvas id="myChart"></canvas>
+  <!-- <link rel="stylesheet" href="css/indexstyle.css" /> -->
+  <link rel="stylesheet" href="css/mediastyle.css" />
+
+  <script src="https://kit.fontawesome.com/c88ae8fbf4.js" crossorigin="anonymous"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <!-- <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" /> -->
+
+
+
+  <footer class="mediacontainer">
+    <div class="footer">
+      <div class="footrow">
+        <!-- <div class="spacer" /> -->
+        <div class="cont">
+          <div class="butt" onclick="lower()"><i class="fas fa-volume-down "></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt" onclick="louder()"><i class="fas fa-volume-up "></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt" onclick="mute()"><i class="fas fa-volume-off "></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt" onclick="previous()"><i class="fas fa-step-backward "></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt play" onclick="play() " id="playicon"><i class="fas fa-play"></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt " onclick="next()"><i class="fas fa-step-forward"></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt " onclick="toggle()"><i class="far fa-lightbulb"></i></div>
+        </div>
+        <!-- <div class="spacer" /> -->
+      </div>
+    </div>
+  </footer>
+  <!-- <img src="Salto.jpg"/> -->
+
+  <script>
+    const socket = io.connect('/player');
+    socket.on('connect', function () {
+
+    });
+    socket.on('response', function (jsonobj) {
+      alert(jsonobj.message)
+    });
+    socket.on('song', (song) => {
+      // document.getElementById('name').innerHTML = song.title + " - " + song.artist;
+      document.getElementById('playicon').innerHTML = song.playing ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
+    });
+
+
+    function toggle() { socket.emit("toggle") }
+    function lower() { socket.emit("lower") }
+    function louder() { socket.emit("louder") }
+    function mute() { socket.emit("mute") }
+    function previous() { socket.emit("previous") }
+    function play() { socket.emit("play"); console.log("play") }
+    function next() { socket.emit("next") }
+  </script>
+
+
+  <script>
+    const colorArray = ["#ea9e70", "#b4c086", "#d3486d", "#88e9b8", "#b0d87b", "#679c9d", "#0023b8", "#9ab9b7", "#228916", "#520d3a", "#dba2e6", "#5be4f0", "#aa226d", "#71b1f4", "#f1ae16", "#608572", "#b46238", "#79352c", "#ea24a3", "#ee91e3", "#73872a", "#c79ed2", "#dd93fd", "#30cc49", "#1c0365", "#06e052", "#2d7d2a", "#1deaa7", "#b2db15", "#cb2582", "#996635", "#539397", "#79806e", "#d6dd92", "#983f7a", "#521250", "#de73c2", "#c79bc2", "#0d5ac1", "#77ecca", "#436a9f", "#21538e", "#1c271", "#1ec227", "#7d1d85", "#e4ac44", "#608fa4", "#8a96c6", "#409188", "#c5a4fb", "#af3101", "#51aed9", "#983f7a", "#89d534", "#3cec35", "#77772a", "#05d371", "#20f6ba", "#b17fc9", "#fc458e", "#d2737d", "#4b5bdc", "#d298e2", "#e33e52", "#bde052", "#be608b", "#dc1c06", "#9cb64a", "#2ca1ae", "#a82b89", "#6749e8", "#15b9ee", "#86e98f", "#79bca0", "#e23dd0", "#3d6751", "#75d89e", "#57c4d8", "#b2c24f", "#1bb699", "#ce00be", "#3e464c", "#651be6", "#615af0", "#3f8473", "#00f87c", "#6119d0", "#243eeb", "#fa06ec", "#0023b8", "#521250", "#4bb473", "#2f3f94", "#d6dd92", "#fb21a3", "#a8b8d4", "#34891f", "#9348af", "#cd2f00", "#e3a481", "#640fc1", "#5426e0", "#406df9", "#f205e6", "#32d5d6", "#cb5bea", "#f07815", "#986b53", "#1c271", "#635f6d", "#a259a4", "#802234", "#421f79", "#d3277a", "#ba96ce", "#d02e29", "#088baf", "#c9a941", "#79352c", "#060e27", "#9685eb", "#0eb621", "#ffdbe1", "#935b6d", "#e33e52", "#1a806b", "#ff3420", "#880977", "#63b598", "#823c59", "#0971f0", "#a2f8a5", "#1bede6", "#8fd883", "#48b41b", "#807fb", "#00f7f9", "#88aa0b", "#5d2c52", "#96b00c", "#ce7d78", "#a48a9e", "#566ca0", "#0f5997", "#d3493a", "#8fb413", "#c4d647", "#2dfff6", "#e08c56", "#e145ba", "#62c03e", "#fc6b57", "#a84a8f", "#dce77a", "#513d98", "#fc7e41", "#64820f", "#21d52e", "#1a8011", "#5cdd87", "#da967d", "#d00043", "#225b8", "#3f16d9", "#10e5b1", "#f812b3", "#fff4d7", "#fb4c03", "#f53b2a", "#67eb4b", "#b2b4f0", "#a4e43f", "#c6c42c", "#c9d730", "#64820f", "#2f7b99", "#ff065", "#aead3a", "#76fc1b", "#c0a43c", "#3b8c2a", "#01ac53", "#b2be57", "#ae90e2", "#4834d0", "#df514a", "#8fe22a", "#4ca2f9", "#474893", "#c3c89d", "#e0eeb8", "#7e50a8", "#e1cf3b", "#5d1d0c", "#4a543f", "#289812", "#89d534", "#cefcb8", "#96e591", "#ac7c0a", "#250662", "#986b53", "#c188a2", "#e7dbce", "#1dc18", "#0cd36d", "#ea24a3", "#7ad236", "#b2be57", "#28fcfd", "#f158bf", "#f50422", "#1bb699", "#f2510e", "#947002", "#436a9e", "#3b8c2a", "#6b2e5f", "#6b2e5f", "#0ec0ff", "#4be47", "#911e20", "#7a3d93", "#b11573", "#a4d17a", "#ef6e3c", "#9e6d71", "#41d158", "#1350ce", "#ac3e1b", "#1c65cb", "#fa06ec", "#2f1179", "#36486a", "#c6e1e8", "#17232", "#2a3434", "#f50422", "#b47162", "#7fb411", "#1ae6db", "#14a9ad", "#0f525f", "#25b67", "#11dec1", "#916988", "#1d1d58", "#8d6c2f", "#5bb32d", "#ca4751", "#93f2d7", "#06f43a", "#792ed8", "#f697c1", "#7260d8", "#6995ba", "#9b5c2a", "#c79ed2", "#d36647", "#c2b0e2", "#1a806a", "#61da5e", "#4f0f6f", "#c4fd57", "#d36647", "#d7790f", "#00efd4", "#a5b3d9", "#07d7f6", "#7fb411", "#911e7e", "#b308d3", "#bb09b", "#996c48", "#8798a4", "#d70a9c", "#21538e", "#4cf09d", "#e3d94c", "#648177"];
+    var output = document.getElementById('output');
+    var chart = document.getElementById('myChart');
+    chart.style.backgroundColor = '#404D52';
+
+    chart.width = window.innerWidth;
+    chart.height = window.innerHeight;
+    var ctx = chart.getContext('2d');
+
+    labels = [];
+    data = [];
+    bordercolor = [];
+    backgroundcolor = [];
+    var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+          data: data,
+          backgroundColor: backgroundcolor,
+          borderColor: bordercolor,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+    function updatechart() {
+      let colorindex = 0;
+      fetch('/stepcounts')
+        .then(res => res.json())
+        .then((out) => {
+          console.log('Output: ', out);
+          // output.innerText = JSON.stringify(out);
+
+          steps = out.steps.reverse();
+          // labels = {};
+          labels = {};
+          let days = [];
+          let persons = {};
+          var arrayLength = steps.length;
+          for (var i = 0; i < arrayLength; i++) {
+            if ((new Date() - new Date(steps[i].Day)) / (1000 * 60 * 60 * 24) > 30) {
+
+              // console.log(new Date(steps[i].Day));
+              continue;
+            }
+            // if (!mydatasets[steps[i].name]){
+            //   mydatasets[steps[i].name]={label:steps[i].name, data: [], labels: []};
+            //   // mydatasets.labels.push(steps[i].name);
+            // }
+            if (!persons[steps[i].name]) {
+              persons[steps[i].name] = {
+                label: steps[i].name,
+                data: [],
+                // backgroundColor: "green",
+
+                backgroundColor: colorArray[colorindex],
+                borderColor: colorArray[colorindex],
+                borderWidth: 1
+              }
+              colorindex++;
+            }
+            if (!days.includes(steps[i].Day)) {
+              days.push(steps[i].Day)
+            }
+            persons[steps[i].name].data.push(steps[i].Steps)
+            // mydatasets[steps[i].name].data.push(steps[i].Steps)
+            // mydatasets[steps[i].name].labels.push(steps[i].Day)
+            //            console.log(steps[i]);
+            // if (steps[i].Steps > 0) {
+            //   labels.push(steps[i].Day);
+            //   data.push(steps[i].Steps)
+            //   // backgroundcolor.push('rgba(255, 99, 132, 1)')
+            //   // bordercolor.push('rgba(255, 99, 132, 1)')
+            // }
+
+          }
+          // console.log(mydatasets);
+          datasets = [];
+          for (let i in persons) {
+
+            // console.log(days[i]);
+            datasets.push(persons[i]);
+          }
+          console.log(datasets);
+
+
+          // [
+          //                 'rgba(255, 99, 132, 1)',
+          //                 'rgba(54, 162, 235, 1)',
+          //                 'rgba(255, 206, 86, 1)',
+          //                 'rgba(75, 192, 192, 1)',
+          //                 'rgba(153, 102, 255, 1)',
+          //                 'rgba(255, 159, 64, 1)'
+          //             ]
+
+          // var xScale = myChart.scales['x-axis-0'];
+          // var yScale = myChart.scales['y-axis-0'];
+          myChart.data = {
+            datasets: datasets,
+            labels: days
+          };
+          console.log(days)
+          //           myChart.data={
+          //   labels: days,
+          //   datasets: [{
+          //     label: "Blue",
+          //     backgroundColor: "blue",
+          //     data: [3, 7, 4]
+          //   }, {
+          //     label: "Red",
+          //     backgroundColor: "red",
+          //     data: [4, 3, 5]
+          //   }, {
+          //     label: "Green",
+          //     backgroundColor: "green",
+          //     data: [7, 2, 6]
+          //   }]
+          // };
+          // myChart.data.datasets = datasets;
+          // myChart.data.labels = days;
+
+          // myChart.data.labels = labels;
+          // for (let i=0; i<datasets.length){
+
+          // }
+          // myChart.data.datasets = [{
+          //   data: data,
+          //   backgroundColor: backgroundcolor,
+          //   borderColor: bordercolor,
+          //   borderWidth: 1
+          // }];
+          // myChart.data.datasets = [{
+          //   data: data,
+          //   backgroundColor: backgroundcolor,
+          //   borderColor: bordercolor,
+          //   borderWidth: 1
+          // }];
+          myChart.update(0);
+        }).catch(err => console.error(err));
+    }
+    updatechart();
+
+    function oninterval() {
+      updatechart();
+      setTimeout(oninterval, 60 * 1000);
+    }
+    oninterval()
+
+  </script>
+
+
+
+</body>
+
+</html>

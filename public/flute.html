@@ -1,0 +1,403 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>The HTML5 Herald</title>
+  <meta name="description" content="The HTML5 Herald">
+  <meta name="author" content="SitePoint">
+
+  <link rel="stylesheet" href="css/styles.css?v=1.0">
+
+</head>
+
+<body>
+  <!-- <canvas id="myCanvas" height=300 width=10000></canvas> -->
+  <p></p>
+  <!-- <button id="unmuteButton"></button> -->
+  <div id="notes"></div>
+  <textarea id="w3review" name="w3review" rows="4" cols="50">
+  </textarea>
+  <!-- <script src="script.js"></script> -->
+  <!-- <script src="/js/FileSaver.min.js"></script> -->
+  <script type="text/javascript">
+    (function (a, b) { if ("function" == typeof define && define.amd) define([], b); else if ("undefined" != typeof exports) b(); else { b(), a.FileSaver = { exports: {} }.exports } })(this, function () { "use strict"; function b(a, b) { return "undefined" == typeof b ? b = { autoBom: !1 } : "object" != typeof b && (console.warn("Deprecated: Expected third argument to be a object"), b = { autoBom: !b }), b.autoBom && /^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(a.type) ? new Blob(["\uFEFF", a], { type: a.type }) : a } function c(a, b, c) { var d = new XMLHttpRequest; d.open("GET", a), d.responseType = "blob", d.onload = function () { g(d.response, b, c) }, d.onerror = function () { console.error("could not download file") }, d.send() } function d(a) { var b = new XMLHttpRequest; b.open("HEAD", a, !1); try { b.send() } catch (a) { } return 200 <= b.status && 299 >= b.status } function e(a) { try { a.dispatchEvent(new MouseEvent("click")) } catch (c) { var b = document.createEvent("MouseEvents"); b.initMouseEvent("click", !0, !0, window, 0, 0, 0, 80, 20, !1, !1, !1, !1, 0, null), a.dispatchEvent(b) } } var f = "object" == typeof window && window.window === window ? window : "object" == typeof self && self.self === self ? self : "object" == typeof global && global.global === global ? global : void 0, a = /Macintosh/.test(navigator.userAgent) && /AppleWebKit/.test(navigator.userAgent) && !/Safari/.test(navigator.userAgent), g = f.saveAs || ("object" != typeof window || window !== f ? function () { } : "download" in HTMLAnchorElement.prototype && !a ? function (b, g, h) { var i = f.URL || f.webkitURL, j = document.createElement("a"); g = g || b.name || "download", j.download = g, j.rel = "noopener", "string" == typeof b ? (j.href = b, j.origin === location.origin ? e(j) : d(j.href) ? c(b, g, h) : e(j, j.target = "_blank")) : (j.href = i.createObjectURL(b), setTimeout(function () { i.revokeObjectURL(j.href) }, 4E4), setTimeout(function () { e(j) }, 0)) } : "msSaveOrOpenBlob" in navigator ? function (f, g, h) { if (g = g || f.name || "download", "string" != typeof f) navigator.msSaveOrOpenBlob(b(f, h), g); else if (d(f)) c(f, g, h); else { var i = document.createElement("a"); i.href = f, i.target = "_blank", setTimeout(function () { e(i) }) } } : function (b, d, e, g) { if (g = g || open("", "_blank"), g && (g.document.title = g.document.body.innerText = "downloading..."), "string" == typeof b) return c(b, d, e); var h = "application/octet-stream" === b.type, i = /constructor/i.test(f.HTMLElement) || f.safari, j = /CriOS\/[\d]+/.test(navigator.userAgent); if ((j || h && i || a) && "undefined" != typeof FileReader) { var k = new FileReader; k.onloadend = function () { var a = k.result; a = j ? a : a.replace(/^data:[^;]*;/, "data:attachment/file;"), g ? g.location.href = a : location = a, g = null }, k.readAsDataURL(b) } else { var l = f.URL || f.webkitURL, m = l.createObjectURL(b); g ? g.location = m : location.href = m, g = null, setTimeout(function () { l.revokeObjectURL(m) }, 4E4) } }); f.saveAs = g.saveAs = g, "undefined" != typeof module && (module.exports = g) });
+  </script>
+  <!-- <script type="text/javascript" src=Filesaver/> -->
+
+  <script type="text/javascript">
+
+    // var c = document.getElementById("myCanvas");
+    // var ctx = c.getContext("2d");
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+    var context = new AudioContext();
+    function restart() {
+      document.clear()
+
+      // document.querySelector('button').addEventListener('click', function() {
+      //     var arr=[]
+      //     for (var i = 0; i < context.sampleRate * seconds; i++) {
+      //         arr[i] = sineWaveAt(i, tone) * volume
+      //       }
+
+      //     playSound(arr)
+      //   });
+      // stringtosong("B5 , A#5 , G#5 , G#5 , A#5 , C#5 , B5 , A#5 , G#5 , G#5 , A#5 , F#5 , G#5 , C#5")
+      // console.log(songtostring(stillalive));
+      drawsong(allnotes, "Notes");
+      // drawsong(allnotes, "Notes");
+
+      load();
+    }
+
+    // window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+    // var context = new AudioContext();
+    // document.querySelector('button').addEventListener('click', function() {
+    //     var arr=[]
+    //     for (var i = 0; i < context.sampleRate * seconds; i++) {
+    //         arr[i] = sineWaveAt(i, tone) * volume
+    //       }
+
+    //     playSound(arr)
+    //   });
+
+    function drawsong(mnotes, name, instr) {
+      const notes = mnotes;
+      var mdiv = document.createElement("DIV");   // Create a <button> element
+      document.getElementById("notes").appendChild(mdiv);
+      mdiv.style = "height:400;border:1px solid #ccc;font:16px/26px Georgia, Garamond, Serif;overflow:none;"
+
+      var namefield = document.createElement("TEXTAREA");   // Create a <button> element
+      namefield.style = "width: 100%"
+      var oldname = name;
+      namefield.value = name;
+
+      mdiv.appendChild(namefield);
+      // mdiv.style.background = "red"
+      // console.log(mdiv);
+      var canv = document.createElement("CANVAS");
+      canv.width = notes.length * 100 + 20;
+      canv.height = 400;
+      mdiv.appendChild(canv);
+
+      var text = document.createElement("TEXTAREA");   // Create a <button> element
+      console.log(window.innerWidth)
+
+
+      text.style = "width: 100%;font:20px  Arial;"
+      if (instr != undefined) {
+        text.value = instr;
+      }
+
+      mdiv.appendChild(text);
+      var savebut = document.createElement("Button");   // Create a <button> element
+      savebut.innerHTML = "Save";
+      savebut.style = "width: 50%"
+      savebut.onclick = function () {
+        localStorage.removeItem(oldname);
+        localStorage.setItem(namefield.value, text.value);
+        restart();
+      }
+
+      var deletebut = document.createElement("Button");   // Create a <button> element
+      deletebut.innerHTML = "X";
+      deletebut.onclick = function () {
+        console.log(oldname)
+        localStorage.removeItem(oldname);
+        restart();
+      }
+      mdiv.appendChild(deletebut);
+      mdiv.appendChild(savebut);
+
+
+
+
+      for (i in notes) {
+        drawtone(i, notes[i], canv);
+      }
+      const elemLeft = canv.offsetLeft + canv.clientLeft;
+      const elemTop = canv.offsetTop + canv.clientTop;
+      canv.addEventListener('click', function (event) {
+        var x = event.pageX - elemLeft,
+          y = event.pageY - elemTop;
+        console.log(Math.floor(x / 100));
+        playSound(notes[Math.floor((x + 30) / 100)]);
+      }, false);
+    }
+    function playSound(mobj) {
+      var arr = []
+      for (var i = 0; i < context.sampleRate * seconds; i++) {
+        arr[i] = sineWaveAt(i, mobj.tone) * volume
+      }
+      var buf = new Float32Array(arr.length)
+      for (var i = 0; i < arr.length; i++) buf[i] = arr[i]
+      var buffer = context.createBuffer(1, buf.length, context.sampleRate)
+      buffer.copyToChannel(buf, 0)
+      var source = context.createBufferSource();
+      source.buffer = buffer;
+      source.connect(context.destination);
+      source.start(0);
+    }
+
+    function sineWaveAt(sampleNumber, tone) {
+      var sampleFreq = context.sampleRate / tone
+      return Math.sin(sampleNumber / (sampleFreq / (Math.PI * 2)))
+    }
+
+    volume = 0.2,
+      seconds = 0.5,
+      tone = 440
+
+
+    function drawtone(i, mobj, div) {
+      // ctx.moveTo(i*100, 0);
+      // console.log(div)
+      var c = div;
+      const ctx = c.getContext("2d");;
+      ctx.rect(i * 100 + 10, 0, 30, 30);
+      ctx.rect(i * 100, 40, 50, 100);
+      ctx.rect(i * 100, 140, 50, 100);
+      ctx.rect(i * 100, 240, 50, 30);
+      ctx.stroke();
+
+      for (var h = 0; h < 5; h++) {
+        ctx.moveTo((i) * 100, 380-h*10);
+        ctx.lineTo((i) * 100 + 100, 380-h*10);
+        ctx.stroke();
+      }
+      ctx.beginPath();
+
+        ctx.arc(i*100+30,  380-mobj.note*10, 5,0, 2 * Math.PI);
+          ctx.stroke();
+          ctx.fill();
+        // ctx.moveTo((i) * 100, 380-mobh.note*15);
+        // ctx.lineTo((i) * 100 + 100, 380-mobh.note*15);
+        // ctx.stroke();
+      
+      {//0
+        ctx.beginPath();
+        if (mobj.holes[0] == 1) {
+          ctx.arc(i * 100 + 25, 15, 10, 0, 2 * Math.PI);
+          ctx.stroke();
+          ctx.fill();
+        }
+        if (mobj.holes[0] == 2) {
+          ctx.arc(i * 100 + 25, 15, 10, 0, 1 * Math.PI);
+          ctx.stroke();
+          ctx.fill();
+        }
+        if (mobj.holes[0] == 0) {
+          ctx.arc(i * 100 + 25, 15, 10, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+
+      }
+      for (j = 1; j <= 5; j++) {
+        ctx.beginPath();
+        ctx.arc(i * 100 + 25, 55 + (j - 1) * 33, 10, 0, 2 * Math.PI);
+        ctx.stroke();
+        if (mobj.holes[j] == 1) {
+          ctx.fill();
+        }
+      }
+      {
+
+        if (mobj.holes[6] == 0) {
+          ctx.beginPath();
+
+          ctx.arc(i * 100 + 15, 220, 8, 0, 2 * Math.PI);
+          ctx.stroke();
+          ctx.beginPath();
+
+          ctx.arc(i * 100 + 40, 220, 4, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+        if (mobj.holes[6] == 1) {
+          ctx.beginPath();
+
+          ctx.arc(i * 100 + 15, 220, 8, 0, 2 * Math.PI);
+          ctx.stroke();
+          ctx.fill();
+          ctx.beginPath();
+
+          ctx.arc(i * 100 + 40, 220, 4, 0, 2 * Math.PI);
+          ctx.fill();
+          ctx.stroke();
+        }
+        if (mobj.holes[6] == 2) {
+          ctx.beginPath();
+
+          ctx.arc(i * 100 + 15, 220, 8, 0, 2 * Math.PI);
+          ctx.stroke();
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(i * 100 + 40, 220, 4, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+      }
+      {
+
+        if (mobj.holes[7] == 0) {
+          ctx.beginPath();
+
+          ctx.arc(i * 100 + 15, 255, 8, 0, 2 * Math.PI);
+          ctx.stroke();
+          ctx.beginPath();
+
+          ctx.arc(i * 100 + 40, 255, 4, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+        if (mobj.holes[7] == 1) {
+          ctx.beginPath();
+
+          ctx.arc(i * 100 + 15, 255, 8, 0, 2 * Math.PI);
+          ctx.stroke();
+          ctx.fill();
+          ctx.beginPath();
+
+          ctx.arc(i * 100 + 40, 255, 4, 0, 2 * Math.PI);
+          ctx.fill();
+          ctx.stroke();
+        }
+        if (mobj.holes[7] == 2) {
+          ctx.beginPath();
+
+          ctx.arc(i * 100 + 15, 255, 8, 0, 2 * Math.PI);
+          ctx.stroke();
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(i * 100 + 40, 255, 4, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+      }
+      ctx.font = "20px Arial";
+      ctx.fillText(mobj.name, i * 100, 300);
+
+      // var btn = document.createElement("BUTTON");   // Create a <button> element
+      // btn.innerHTML = mobj.name;                   // Insert text
+      // btn.style.width = "100px"
+      // document.body.appendChild(btn);
+      // btn.onclick = function () { playSound(mobj) }
+
+
+    }
+    // A={name:"A", holes: [1, 1, 1, 1, 1, 1, 1, 0], tone:440}
+    // B={name:"B",holes: [2, 1, 1, 1, 1, 1, 2, 1], tone:493.88 }
+    C5 = { name: "C5", holes: [1, 1, 1, 1, 1, 1, 1, 1], tone: 523.25 , note:-1}
+    Cs5 = { name: "C#5", holes: [1, 1, 1, 1, 1, 1, 1, 2], tone: 554.37 ,note:-1}
+    D5 = { name: "D5", holes: [1, 1, 1, 1, 1, 1, 1, 0], tone: 587.33, note:-0.5}
+    Ds5 = { name: "D#5", holes: [1, 1, 1, 1, 1, 1, 2, 0], tone: 622.25 ,note:-0.5}
+    E5 = { name: "E5", holes: [1, 1, 1, 1, 1, 1, 0, 0], tone: 659.25 ,note:0}
+    F5 = { name: "F5", holes: [1, 1, 1, 1, 1, 0, 1, 1], tone: 698.46 , note:0.5}
+    Fs5 = { name: "F#5", holes: [1, 1, 1, 1, 0, 1, 1, 0], tone: 739.99 ,note: 0.5}
+    G5 = { name: "G5", holes: [1, 1, 1, 1, 0, 0, 0, 0], tone: 783.99 ,note: 1}
+    Gs5 = { name: "G#5", holes: [1, 1, 1, 0, 1, 1, 2, 0], tone: 830.61 ,note: 1}
+    A5 = { name: "A5", holes: [1, 1, 1, 0, 0, 0, 0, 0], tone: 880.00 ,note :1.5}
+    As5 = { name: "A#5", holes: [1, 0, 1, 1, 1, 0, 0, 0], tone: 932.33 ,note :1.5}
+    B5 = { name: "B5", holes: [1, 1, 0, 0, 0, 0, 0, 0], tone: 987.77 ,note :2}
+
+    C6 = { name: "C6", holes: [1, 0, 1, 0, 0, 0, 0, 0], tone: 1046.50 ,note :2.5}
+    Cs6 = { name: "C#6", holes: [0, 1, 1, 0, 0, 0, 0, 0], tone: 1108.73 ,note :2.5}
+    D6 = { name: "D6", holes: [0, 0, 1, 0, 0, 0, 0, 0], tone: 1174.66 ,note :3}
+    Ds6 = { name: "D#6", holes: [0, 0, 1, 1, 1, 1, 1, 0], tone: 1244.51 ,note :3.5}
+    E6 = { name: "E6", holes: [2, 1, 1, 1, 1, 1, 0, 0], tone: 1318.51 ,note :4}
+    F6 = { name: "F6", holes: [2, 1, 1, 1, 1, 0, 1, 0], tone: 1396.91 ,note :4.5}
+    Fs6 = { name: "F#6", holes: [2, 1, 1, 1, 0, 1, 0, 0], tone: 1479.98 ,note :5}
+    G6 = { name: "G6", holes: [2, 1, 1, 1, 0, 0, 0, 0], tone: 1567.98 ,note :5.5}
+    Gs6 = { name: "G#6", holes: [2, 1, 1, 0, 1, , , 0], tone: 1661.22 ,note :5.5}
+    A6 = { name: "A6", holes: [2, 1, 1, 0, 0, 0, 0, 0], tone: 1760.00 ,note :6}
+    As6 = { name: "A#6", holes: [2, 1, 1, 0, 1, 1, 1, 0], tone: 1864.66 ,note :6}
+    B6 = { name: "B#6", holes: [2, 1, 1, 0, 1, 1, 0, 0], tone: 1975.53 ,note :6.5}
+
+    C7 = { name: "C7", holes: [2, 1, 0, 0, 1, 1, 0, 0], tone: 2093.00 ,note :7}
+    Cs7 = { name: "C#7", holes: [2, 1, 0, 1, 1, 1, 0, 1], tone: 2217.46 ,note :7.5}
+    D7 = { name: "D7", holes: [2, 1, 0, 1, 1, 0, 1, 0], tone: 2349.32 ,note :8}
+
+    // D={  name:"D",holes: [0, 1, 1, 0, 1, 1, 1, 1], tone:587.33  }
+    // drawtone(0, A )
+    // drawtone(1, B)
+    allnotes = [C5, Cs5, D5, Ds5, E5, F5, Fs5, G5, Gs5, A5, As5, B5,
+      C6, Cs6, D6, Ds6, E6, F6, Fs6, G6, Gs6, A6, As6, B6,
+      C7, Cs7, D7
+    ]
+    var dict = {}
+    for (i in allnotes) {
+      dict[allnotes[i].name] = allnotes[i];
+    }
+    // for (i in allnotes) {
+    //   drawtone(i,allnotes[i],document)
+    // }
+    stillalive = [B5, As5, Gs5, Gs5, As5, Cs5, B5, As5, Gs5, Gs5, As5, Fs5, Gs5, Cs5]
+    // for (i in stillalive) {
+    //   // drawtone(i, stillalive[i])
+    // }
+
+
+
+    function songtostring(notes) {
+      var mstr = ""
+      for (i in notes) {
+        mstr += " " + notes[i].name
+        if (i != notes.length - 1) {
+          mstr += " ,"
+        }
+      }
+      return mstr;
+    }
+
+    // console.log(dict)
+
+    function stringtosong(instr) {
+      console.log(instr)
+
+      mstr = instr.split(",").join(" ").toUpperCase();
+
+
+      var splitted = mstr.split(" ").filter(function (el) { return el.length != 0 });
+      // console.log(splitted)
+      var mnotes = [];
+      for (i in splitted) {
+        // console.log(dict[splitted[i]])
+        if (dict[splitted[i]] != undefined) {
+          mnotes.push(dict[splitted[i]])
+        }
+      }
+      // console.log(mnotes)
+      return mnotes;
+    }
+
+    // function saveStaticDataToFile() {
+    //   var blob = new Blob(["B5 , A#5 , G#5 , G#5 , A#5 , C#5 , B5"],
+    //     { type: "text/plain;charset=utf-8" });
+    //   saveAs(blob, "static.txt");
+    // }
+    // localStorage.removeItem('stillalive');
+
+    function load() {
+      // console.log(localStorage.length)
+      for (var i = 0; i < localStorage.length; i++) {
+        console.log(localStorage[localStorage.key(i)]);
+        drawsong(stringtosong(localStorage[localStorage.key(i)]), localStorage.key(i), localStorage[localStorage.key(i)])
+      }
+    }
+    // load();
+    // var someData = 'B5 , A#5 , G#5 , G#5 , A#5 , C#5 , B5';
+    // localStorage.setItem('stillalive', someData);
+
+    // var data = localStorage.getItem('stillalive');
+    // drawsong(stringtosong(data),"stillalive");
+
+    // stringtosong("B5 , A#5 , G#5 , G#5 , A#5 , C#5 , B5 , A#5 , G#5 , G#5 , A#5 , F#5 , G#5 , C#5")
+    // console.log(songtostring(stillalive));
+    // saveStaticDataToFile();
+    // drawsong(stillalive);
+
+    restart()
+  </script>
+</body>
+
+</html>

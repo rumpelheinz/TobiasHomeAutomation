@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log</title>
+</head>
+<body>
+<div id="log">    </div>
+</body>
+
+<script src="/socket.io/socket.io.js"></script>
+<script >
+const log=document.getElementById("log");
+socket = io.connect('/journalctl');
+var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+
+
+socket.on('connect', function () {
+    console.log("connected")
+});
+socket.on('update', function (jsonobj) {
+    log.innerHTML+="<div ><a style='background:#000000; color:#FF0000' >"+new Date(jsonobj.__REALTIME_TIMESTAMP/1000).toLocaleDateString("en-US", options)+"</a>" +jsonobj.MESSAGE+"</div>";
+  console.log(jsonobj);
+});
+socket.on('init', function (jsonobj) {
+    console.log(jsonobj);
+});
+
+</script>
+</html>

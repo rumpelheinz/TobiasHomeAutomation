@@ -1,0 +1,52 @@
+<footer class="footercontainer">
+    <div class="footer">
+
+        <div class="footrow">
+            <!-- <div class="spacer" /> -->
+            <div class="cont">
+                <div class="butt" onclick="lower()"><i class="fas fa-volume-down "></i></div>
+            </div>
+            <div class="cont">
+                <div class="butt" onclick="louder()"><i class="fas fa-volume-up "></i></div>
+            </div>
+            <div class="cont">
+                <div class="butt" onclick="mute()"><i class="fas fa-volume-off "></i></div>
+            </div>
+            <div class="cont">
+                <div class="butt" onclick="previous()"><i class="fas fa-step-backward "></i></div>
+            </div>
+            <div class="cont">
+                <div class="butt play" onclick="play()"><i class="fas fa-play"></i></div>
+            </div>
+            <div class="cont">
+                <div class="butt " onclick="next()"><i class="fas fa-step-forward"></i></div>
+            </div>
+            <!-- <div class="spacer" /> -->
+        </div>
+    </div>
+</footer>
+<!-- <img src="Salto.jpg"/> -->
+
+<script>
+    const socket = io.connect('/player');
+    socket.on('connect', function () {
+
+    });
+    socket.on('response', function (jsonobj) {
+        alert(jsonobj.message)
+    });
+    socket.on('song', (song) =>
+        document.getElementById('name').innerHTML = ' ' + song)
+    function togglepassword() {
+        var x = document.getElementById("psw").value;
+        socket.emit('togglepassword', { password: x })
+    }
+
+    function toggle() { socket.emit("toggle"), console.log('test') }
+    function lower() { socket.emit("lower") }
+    function louder() { socket.emit("louder") }
+    function mute() { socket.emit("mute") }
+    function previous() { socket.emit("previous") }
+    function play() { socket.emit("play") }
+    function next() { socket.emit("next") }
+</script>

@@ -1,0 +1,87 @@
+body {
+    background-color: #212121 ;
+    color:#E7FFFF;
+    font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji;
+    font-size: 16px;
+}
+
+.innerbox{
+    max-width:904px;
+    margin: auto;
+}
+
+img{
+    max-width: 904px;
+}
+
+code{
+    color:#FFCB61;
+}
+
+a:-webkit-any-link{
+    color:#77BBB5;
+}
+
+p, h1{
+    border-left:  5px solid transparent;
+
+}
+p:hover, h1:hover{
+    border-left:  5px solid #767D7D;
+    background-color: #171717;
+}
+
+.hljs{
+    background-color:#1A1A1A;
+    color:#E7FFFF;
+}
+
+.hljs-section{
+    color:#C792E4;
+}
+
+.hljs-attr{
+    color:#C3E88D;
+}
+
+h1{
+    border-bottom: 1px solid #E7FFFF;
+    font-weight: 600;
+}
+h2{
+    border-bottom: 1px solid #E7FFFF59;
+}
+
+.hljs-keyword{
+    color: #B292EA;
+}
+
+.hljs-string{
+    color:#89DDFF;
+}
+
+.hljs-number{
+    color: #F78C56;
+}
+.hljs-built_in{
+    color:#75beff;
+}
+
+.hljs-literal{
+    color:#FF9CAC;
+}
+.properties .hljs-attr{
+    color:#C792E4;
+}
+
+code:not(.hljs):not(.language-properties):before {
+    content: "\0024";
+    margin-right: 6px;
+    color: #80A6EE;
+    font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+    font-size:85%;
+}
+
+.hljs {
+    max-height:400px;
+}

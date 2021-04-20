@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.3/marked.min.js"
+        integrity="sha512-ZCO24NbTkJ7msQiCAkiufwqkuk9gcObBgDfBFa3F9k5mjGvmsfb/ben7s28Ss10xsbl3Pt+B5QqdH5Tg4V0Vag=="
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.2/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.2/highlight.min.js"></script>
+    <link rel="stylesheet" href="css/Readmestyle.css" />
+    <script>
+        window.onbeforeunload = function () {
+            var scrollPos;
+            if (typeof window.pageYOffset != 'undefined') {
+                scrollPos = window.pageYOffset;
+            }
+            else if (typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat') {
+                scrollPos = document.documentElement.scrollTop;
+            }
+            else if (typeof document.body != 'undefined') {
+                scrollPos = document.body.scrollTop;
+            }
+            console.log(scrollPos);
+            document.cookie = "scrollTop=" + scrollPos;
+        }
+
+    </script>
+
+</head>
+
+<body>
+    <div class="outerbox">
+        <div id="mymarkdown" class="innerbox"></div>
+    </div>
+</body>
+
+<script>
+
+
+    const renderer = {
+        heading(text, level) {
+            const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-');
+
+            return `
+            <h${level}>
+              <a name="${escapedText}" class="anchor" href="#${escapedText}">
+                <span class="header-link"></span>
+              </a>
+              ${text}
+            </h${level}>`;
+        }
+    };
+
+
+    fetch('/readme')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("mymarkdown").innerHTML = marked(data, {
+                highlight: function (code, lang) {
+                    return '<pre><code class="hljs ' +
+                        (
+                            lang ?
+                                lang :
+                                ''
+                        ) +
+                        '">' +
+                        (
+                            lang ?
+                                hljs.highlight(lang, code).value :
+                                hljs.highlightAuto(code).value
+                        ) +
+                        "</code></pre>";
+                    // return hljs.highlight(lang, code).value;
+                }
+            });
+            {
+                function refreshonupdate() {
+                    if (document.cookie.match(/scrollTop=([^;]+)(;|$)/) != null) {
+                        var arr = document.cookie.match(/scrollTop=([^;]+)(;|$)/);
+                        document.documentElement.scrollTop = parseInt(arr[1]);
+                        console.log(parseInt(arr[1]))
+                        document.body.scrollTop = parseInt(arr[1]);
+                    }
+                }
+                let images = document.getElementsByTagName('img');
+                for (let i in images) {
+                    images[i].onload = refreshonupdate;
+                }
+
+            };
+        }
+
+        );
+
+
+
+</script>
+
+</html>

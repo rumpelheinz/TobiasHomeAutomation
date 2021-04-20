@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Room Control</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import materialize.css-->
+  <!-- <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" /> -->
+
+  <link rel="stylesheet" href="/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link href="/css/roboto.css" rel="stylesheet">
+  <link href="/css/mediacontrols.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/mediastyle.css" />
+  <link rel="stylesheet" href="css/console.css" />
+
+
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <script src="https://unpkg.com/html-react-parser@latest/dist/html-react-parser.min.js"></script>
+  <script src="https://kit.fontawesome.com/c88ae8fbf4.js" crossorigin="anonymous"></script>
+
+
+</head>
+
+<body>
+  <nav class="topbar" style="position:sticky; height:auto; ">
+
+    <div id="mgrid">
+      <div id="home">
+        <a href="/"> <i class="fas fa-home" style="text-align: left;"></i></a>
+      </div>
+      <div id="artistsong">
+        <div>
+          <i class="fas fa-compact-disc fa-sm"></i><a id="song">
+          </a>
+        </div>
+        <div>
+          <i class="fas fa-user-circle fa-sm"></i><a id="artist"></a> <!-- </span> -->
+          <a id="duration"></a>
+        </div>
+      </div>
+      <div id="loggedin" >
+        <a style="display:block;width:100%; width:100%" ></a>
+      </div>
+    </div>
+
+    <div class="slidercontainer">
+      <input type="range" min="0" max="100" value="0" class="slider" id="myRange" />
+    </div>
+  </nav>
+
+  <div class="form-popup" id="loginForm" style="display: none;">
+
+    <form class="form-container">
+      <h2>Login</h2>
+      <input  name="username" id="username" placeholder="Enter Email" type="text"  autocomplete="username" required />
+      <input  name="password" placeholder="Enter Password" id="password" type="password"  autocomplete="current-password" required />
+      <button type="button" class="btn login" id="loginbutton">Login</button>
+      <button type="button" class="btn cancel" id="closeformbutton" >Close</button>
+    </form>
+  </div>
+
+  <main id="main">
+
+    <div class="mycontainer" id="mycontainer">
+      <canvas id="myChart"></canvas>
+    </div>
+
+    <div id="console_container" />
+
+  </main>
+
+  <footer class="mediacontainer">
+    <div class="footer">
+      <div class="footrow">
+        <!-- <div class="spacer" /> -->
+        <div class="cont">
+          <div class="butt" onclick="lower()"><i class="fas fa-volume-down "></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt" onclick="louder()"><i class="fas fa-volume-up "></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt" onclick="mute()"><i class="fas fa-volume-off "></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt" onclick="previous()"><i class="fas fa-step-backward "></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt play" onclick="play() " id="playicon"><i class="fas fa-play"></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt " onclick="next()"><i class="fas fa-step-forward"></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt " onclick="toggle()" id="lampbot"><i class="far fa-lightbulb"></i></div>
+        </div>
+        <div class="cont">
+          <div class="butt " onclick="togglesocket(1)" id="socketbutton"><i class="fas fa-seedling"></i></div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+
+</body>
+<!-- <script src="/js/jquery-3.2.1.min.js"></script> -->
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/moment.min.js">  </script>
+<script src="/js/Chart.min.js"></script>
+<script src="js/compiled/console.js"></script>
+
+<script type="module" src="/js/mediabuttons.js">  </script>
+<!-- <script type="text/babel" src="js/reactmediabuttons.js"></script> -->
+<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
+<!-- <script type="text/javascript" src="js/materialize.min.js"></script> -->
+
+</html>

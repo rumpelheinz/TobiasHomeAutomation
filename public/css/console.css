@@ -1,0 +1,114 @@
+.mfoot{
+    position: sticky;
+    position: -webkit-sticky;
+    bottom:0px;
+    /* background-color:red; */
+  }
+  
+  .logcontainer{
+    border-top: 2px solid black;
+  }
+  
+  .mlogcontainer{
+    overflow:   none;
+    position:   relative;
+    width:      100%;
+    height:     300px;
+  
+  }
+  .log{
+    /* color:white;background-color: black;         */
+    overflow:   auto;
+    position:   absolute;
+    bottom:     0;
+    max-height: 300px;  
+    width:100%;
+    border-radius: 5px;
+    /* font-family: Consolas, 'Courier New', monospace; */
+    font-size: 14px;
+    color:#eeffff;
+    line-height:1;
+    color: #80A6EE;
+    font-family:SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+ 
+  }
+  
+  
+  .escaper0{
+    color:#f0717870;
+    display:inline;
+    margin:0px;
+    padding:0px;
+  }
+  .escapern{
+    color:#ffcb6b;
+    display:inline;
+    margin:0px;
+    padding:0px;
+  }
+  .escapern{
+    color:#f07178;
+    display:inline;
+    margin:0px;
+    padding:0px;
+  }
+  .escaper{
+    color:#82aaff;
+    display:inline;
+    margin:0px;
+    padding:0px;
+  }
+  #textfield{
+    font-family: Consolas, 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    color:#eeffff;
+    margin-left: 0;
+    width:100%;
+    background-color:#1A1A1A;
+    border-color: transparent;
+    border: none;
+
+  }
+  
+  #sendbutton{
+    /* width: 100px;  */
+    /* padding:50px; */
+    color:white;
+    margin:10px;
+    /* text-align: center;
+    align-content: center; */
+  }
+  #sendbutton :hover{
+    color:white;
+  }
+  
+  .scrollbar
+  ::-webkit-scrollbar-track
+  {
+      /* -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); */
+      /* border-radius: 10px; */
+      background-color: transparent;
+  }
+  
+  .scrollbar
+  ::-webkit-scrollbar
+  {
+      width: 5px;
+      background-color: transparent;
+  }
+  
+  .scrollbar
+  ::-webkit-scrollbar-thumb
+  {
+  
+    transform:translateX(-20px);
+    -ms-transform:translateX(-20px);
+    -webkit-transform:translateX(-20px);
+    border-radius: 10px;
+      /* -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3); */
+      margin-left: 50%;
+      background-color: #D62929;
+  }
+  
+  
