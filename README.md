@@ -121,6 +121,8 @@ Compiling react scripts
 - [ ] Add moisture sensor to plant terrarium, and show data in webinterface.
 
 # 6 Mopidy
+To control mopidy with node js, the [Mopidy-MPD](https://pypi.org/project/Mopidy-MPD/) module has to be installed `sudo python3 -m pip install Mopidy-MPD`, and enabled on port 6610 (See the [config file](#))
+
 Service at 
 [/etc/systemd/system/mopidyservice.service]()
 
@@ -147,7 +149,7 @@ RestartForceExitStatus=3 4
 [Install]
 WantedBy=multi-user.target
 ```
-
+## 6.1 Mopidy config file
 [/home/pi/.config/mopidy/mopidy.conf](file:///home/pi/.config/mopidy/mopidy.conf)
 ```properties
 [core]
