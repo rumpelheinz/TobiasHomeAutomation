@@ -15,9 +15,8 @@ import bodyParser from "body-parser";
 import subprocess from 'child_process';
 
 
-import nconf from 'nconf';
-nconf.use('file', { file: './config.json' });
-nconf.load();
+import { myNconf as nconf, saveConf } from './MyNconf';
+
 
 
 // var lockersocket;
@@ -27,6 +26,7 @@ const parser = new Readline({ delimiter: '\r\n' });
 import path from 'path';
 import mysql from 'mysql';
 
+console.log(nconf.get("mysql").user, nconf.get("mysql").password, nconf.get("mysql").database);
 let con = mysql.createConnection({
 	host: nconf.get("mysql").host,
 	user: nconf.get("mysql").user,
@@ -41,15 +41,7 @@ let con = mysql.createConnection({
 import { MPC } from 'mpc-js';
 const mpc = new MPC();
 
-function save() {
-	nconf.save(function (err: { message: any; }) {
-		if (err) {
-			console.error(err.message);
-			return;
-		}
-		console.log('Configuration saved successfully.');
-	});
-}
+
 
 interface MusicStats {
 	artist: string | undefined;
@@ -120,7 +112,10 @@ const playersocket = io.of('/player');
 const terminalsocket = io.of('/terminal');
 
 con.connect(function (err) {
-	if (err) console.log(err);
+	if (err) {
+		console.error(err);
+		console.error("Check if the SQL server is running, and whether your config.json is setup correctly");
+	}
 });
 
 import fs from 'fs';
@@ -146,8 +141,8 @@ app.post('/login', function (req, res) {
 	res.end();
 });
 
-const androidSendStepsRoute=nconf.get("StepRoute");
-if (!androidSendStepsRoute){
+const androidSendStepsRoute = nconf.get("StepRoute");
+if (!androidSendStepsRoute) {
 	throw new Error('"StepRoute" is not set in nconf');
 }
 app.post(androidSendStepsRoute, function (req, res) {
@@ -310,7 +305,7 @@ function setLight(on: boolean, shouldSave: boolean, shouldWrite: boolean) {
 	}
 	playersocket.emit("lamp", on)
 	if (shouldSave) {
-		save();
+		saveConf();
 	}
 }
 
@@ -322,7 +317,7 @@ function setSocket(number: number, on: boolean, shouldSave: boolean, shouldWrite
 
 	playersocket.emit("socket", on)
 	if (shouldSave) {
-		save();
+		saveConf();
 	}
 }
 
@@ -567,17 +562,26 @@ mpc.connectTCP("localhost", 6610).then(() => {
 			mpc.storedPlaylists.listPlaylists().then((info2) => {
 				console.log("Playlists:");
 				console.log(info2);
-				let favouriteplaylist = info2.find((entry) => {return entry.name == "concentrate"});
+				let favouriteplaylist = info2.find((entry) => { return entry.name == "concentrate" });
 				if (favouriteplaylist)
 					mpc.storedPlaylists.load(favouriteplaylist.name);
-				else
-					mpc.storedPlaylists.load(info2[0].name);
+				else {
+					if (info2[0]){
+						mpc.storedPlaylists.load(info2[0].name);
+					}
+					else{
+						console.error(new Error("No playlists stored in mopidy"))
+					}
+				}
 			})
 		}
 		console.log(info);
 	});
 	checkMPCStatus();
-}).catch((err) => { throw err });
+}).catch((err) => {
+	console.error(new Error("MPC Error"));
+	throw err
+});
 
 mpc.on('changed-player', (e) => {
 	checkMPCStatus();
@@ -653,7 +657,7 @@ playersocket.on('connection', function (socket: Socket) {
 	console.log(address);
 	// getIp(address);
 
-	console.log("Io Connection from (Name: " + socket.handshake.auth?.username + " , PSW:" + socket.handshake.auth?.password + " " + authorization(socket) + ")\nAgent "+agent);
+	console.log("Io Connection from (Name: " + socket.handshake.auth?.username + " , PSW:" + socket.handshake.auth?.password + " " + authorization(socket) + ")\nAgent " + agent);
 	socket.emit("authorization", authorization(socket));
 	socket.emit('song', musicstats);
 	socket.emit('weather', datapoints);
@@ -708,7 +712,7 @@ playersocket.on('connection', function (socket: Socket) {
 		}
 		else {
 			socket.emit("authorization", authorization(socket));
-			
+
 		}
 	})
 	socket.on('next', function (jsonobj) {

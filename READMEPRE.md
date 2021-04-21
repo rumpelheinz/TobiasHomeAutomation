@@ -101,6 +101,17 @@ Monitoring arduino
 Compiling react scripts
 `npx babel --watch src --out-dir public/js/compiled/ --presets react-app/prod`
 
+# Installation
+1. Set up the MySQL server (See [SQL](#SQL)) 
+
+1. `git clone https://github.com/rumpelheinz/TobiasHomeAutomation.git`
+2. Maybe update npm: `npm update` `npm install -g npm` as sudo
+3. `cd TobiasHomeAutomation`
+
+
+`npm install` , and proceed to 
+
+
 
 # Todo
 - [ ] Add alerts when logged in as unknown user.
@@ -110,6 +121,8 @@ Compiling react scripts
 - [ ] Add moisture sensor to plant terrarium, and show data in webinterface.
 
 # Mopidy
+To control mopidy with node js, the [Mopidy-MPD](https://pypi.org/project/Mopidy-MPD/) module has to be installed `sudo python3 -m pip install Mopidy-MPD`, and enabled on port 6610 (See the [config file](#mopidy config file))
+
 Service at 
 [/etc/systemd/system/mopidyservice.service]()
 
@@ -136,7 +149,7 @@ RestartForceExitStatus=3 4
 [Install]
 WantedBy=multi-user.target
 ```
-
+## Mopidy config file
 [/home/pi/.config/mopidy/mopidy.conf](file:///home/pi/.config/mopidy/mopidy.conf)
 ```properties
 [core]
@@ -329,28 +342,13 @@ Get logs:
 `journalctl -u homecontrol -f`
 
 
-## SQL
+# SQL
 I use [Mariadb](https://mariadb.org/) as the MySQL server to store the step history and room temperature.
 
-Logging in:
+## Installation
+1. Follow [the MariaDB guide](https://raspberrytips.com/install-mariadb-raspberry-pi/)
 
-`mysql -u <username> -p`
-
-<password>
-
-`use <dbname>`
-
-`delete from <dbname> where name="te'st";`
-
-`show tables;`
-
-`SHOW COLUMNS FROM <tablename>;`
-
-
-Backup: `mysqldump -u <username> <dbname> -p >backup.sql`
-
-File 
-```SQL
+2. ```SQL
 
 CREATE TABLE `steps` (
   `datum` date NOT NULL,
@@ -371,6 +369,25 @@ CREATE TABLE `updates` (
   `time` timestamp NOT NULL DEFAULT current_timestamp()
 );
 ```
+
+Logging in:
+
+`mysql -u <username> -p`
+
+<password>
+
+`use <dbname>`
+
+`delete from <dbname> where name="te'st";`
+
+`show tables;`
+
+`SHOW COLUMNS FROM <tablename>;`
+
+
+Backup: `mysqldump -u <username> <dbname> -p >backup.sql`
+
+
 
 # ngrok
 Service at [/etc/systemd/system/ngrokservice.service]

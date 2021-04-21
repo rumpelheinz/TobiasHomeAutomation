@@ -1,10 +1,10 @@
-# 1 TobiasHomeAutomation
+# 1 npmhomecontroll
 
 This repo contains a home automation system, in which I use to experiment with different technologies. It is written by myself for myself. The code is messy and unorganized, as it has grown "organically". The system assumes the presence of components such as an Arduino, a mopidy instance, and a mysql server, and thus likely won't run on other systems. It might however provide some inspiration for other developers.
 
 The purpose of this readme is mainly for myself to keep track of commands and websites I've used, and is quite incomplete.
 
-[Github](https://github.com/rumpelheinz/TobiasHomeAutomation)
+[Github](https://github.com/rumpelheinz/npmhomecontroll)
 
 Public Website:[https://tobias.eu.ngrok.io/](https://tobias.eu.ngrok.io/)
 
@@ -42,7 +42,7 @@ I've build an [https://github.com/rumpelheinz/fjallkarta](Android app) based on 
 ![screenshotroomcontroll](Readme/roomcontroll.png)
 
 ## 2.2 Raspberry Pi
-The system uses a raspberry pi 3 to host the website, interface with the arduino, play music, and host the mysql server. (See [ssh](#9-ssh))
+The system uses a raspberry pi 3 to host the website, interface with the arduino, play music, and host the mysql server. (See [ssh](#11-ssh))
 
 ### 2.2.1 Development
 All development happens over ssh. The Visual Studio Code ssh plugin offers plenty of functionality, and by now I rarely miss having a monitor connected to the pi. 
@@ -57,7 +57,7 @@ The code for the arduino is also compiled on the pi, using the [arduino-cli](htt
 
 ### 2.2.2 Music 
 Throughought development, I have tested numerous music players, which all come with different ways to interact with them. 
-1. Currently, the system uses (See [mopidy](#5-mopidy)), which runs headlessly and can e controlled through the [mpc-js package](https://github.com/hbenl/mpc-js-node) 
+1. Currently, the system uses (See [mopidy](#6-mopidy)), which runs headlessly and can e controlled through the [mpc-js package](https://github.com/hbenl/mpc-js-node) 
 2. On a linux system with a screen, [cmus](https://wiki.archlinux.org/index.php/Cmus) can be made to autostart in a terminal. Node can then change the music using commands like `subprocess.exec("cmus-remote -C player-next");`.  To get the status of the music player, grep can be used using subprocess.spawn periodically.
 3. To control normal desktop music players, the [node-key-sender package](https://www.npmjs.com/package/node-key-sender) can be used, e.g: `ks.sendCombination(['control', 'f8']);`
 
@@ -101,15 +101,26 @@ Monitoring arduino
 Compiling react scripts
 `npx babel --watch src --out-dir public/js/compiled/ --presets react-app/prod`
 
+# 4 Installation
+1. Set up the MySQL server (See [SQL](#8-sql)) 
 
-# 4 Todo
+1. `git clone https://github.com/rumpelheinz/TobiasHomeAutomation.git`
+2. Maybe update npm: `npm update` `npm install -g npm` as sudo
+3. `cd TobiasHomeAutomation`
+
+
+`npm install` , and proceed to 
+
+
+
+# 5 Todo
 - [ ] Add alerts when logged in as unknown user.
 - [ ] Create a database for different users with privileges, propably using mysql.
 - [ ] Convert site into single page react app.
 - [ ] Show current sound volume in webinterface.
 - [ ] Add moisture sensor to plant terrarium, and show data in webinterface.
 
-# 5 Mopidy
+# 6 Mopidy
 Service at 
 [/etc/systemd/system/mopidyservice.service]()
 
@@ -294,7 +305,7 @@ Test sound :
 
 `aplay /usr/share/sounds/alsa/Front_Center.wav`
 
-# 6 Running as a service
+# 7 Running as a service
 
 Service file at [/etc/systemd/system/homecontrol.service](file:///etc/systemd/system/homecontrol.service)
 
@@ -329,28 +340,13 @@ Get logs:
 `journalctl -u homecontrol -f`
 
 
-## 6.1 SQL
+# 8 SQL
 I use [Mariadb](https://mariadb.org/) as the MySQL server to store the step history and room temperature.
 
-Logging in:
+## 8.1 Installation
+1. Follow [the MariaDB guide](https://raspberrytips.com/install-mariadb-raspberry-pi/)
 
-`mysql -u <username> -p`
-
-<password>
-
-`use <dbname>`
-
-`delete from <dbname> where name="te'st";`
-
-`show tables;`
-
-`SHOW COLUMNS FROM <tablename>;`
-
-
-Backup: `mysqldump -u <username> <dbname> -p >backup.sql`
-
-File 
-```SQL
+2. ```SQL
 
 CREATE TABLE `steps` (
   `datum` date NOT NULL,
@@ -372,7 +368,26 @@ CREATE TABLE `updates` (
 );
 ```
 
-# 7 ngrok
+Logging in:
+
+`mysql -u <username> -p`
+
+<password>
+
+`use <dbname>`
+
+`delete from <dbname> where name="te'st";`
+
+`show tables;`
+
+`SHOW COLUMNS FROM <tablename>;`
+
+
+Backup: `mysqldump -u <username> <dbname> -p >backup.sql`
+
+
+
+# 9 ngrok
 Service at [/etc/systemd/system/ngrokservice.service]
 ```properties
 
@@ -412,7 +427,7 @@ tunnels:
                 remote_addr: <NGROK TCP PORT HERE>
 ```
 
-# 8 Arduino
+# 10 Arduino
 
 
 Programming: [https://siytek.com/arduino-cli-raspberry-pi/#Install_Arduinocli](https://siytek.com/arduino-cli-raspberry-pi/#Install_Arduinocli)
@@ -449,15 +464,15 @@ arduino-cli upload -v -p /dev/ttyACM0 -b arduino:avr:mega infohub/`
 ![Pinout Arduino Mega]( Readme/mega-1.jpg "Pinout Arduino Mega")
 
 
-# 9 SSH
+# 11 SSH
 
-## 9.1 Remove need for password
+## 11.1 Remove need for password
 `ssh-keygen` on main pc
 
 Copy public key to pi
 `ssh-copy-id <pi>@<Pi-IP-ADDRESS>`
 
-# 10 SSH Copy Files
+# 12 SSH Copy Files
 
 `scp <file1from> [file2from...] <pi@targetaddr:targetpath/>`
 
@@ -465,7 +480,7 @@ Copy public key to pi
 
 
 
-# 11 Arduino Remote
+# 13 Arduino Remote
 
 [Infrared Sender and receiver](https://github.com/z3t0/Arduino-IRremote)
 
@@ -492,5 +507,5 @@ if ( on) {
 
 
 
-# 12 Links
+# 14 Links
 Bluetooth audio receiver: [https://github.com/nicokaiser/rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver)
