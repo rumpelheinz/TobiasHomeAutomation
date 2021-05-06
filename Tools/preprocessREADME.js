@@ -100,11 +100,11 @@ fs.readFile('READMEPRE.md', 'utf8', (err, data) => {
             // console.log("p5:" + p5)
 
             // console.log("offset:" + offset)
-            let header =headermap[p4.toLowerCase()];
+            let header =headermap[p4.replace(/(\s)+/g, "-").toLowerCase()];
             let convertedheader=""
 
             if (!header){
-                console. error("No matching header "+ p4 + " line "+line)
+                console. error("No matching header "+ p4.replace(/(\s)+/g, "-").toLowerCase() + " line "+line)
             }
             else{
                 convertedheader=header.replace(/(\s)+/g, "-").toLowerCase();

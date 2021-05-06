@@ -85,6 +85,7 @@ server.listen(port, function () {
 app.use('/js', express.static(__dirname + '/../public/js')); // redirect bootstrap JS
 app.use('/js', express.static(__dirname + '/../node_modules/jquery/dist')); // redirect JS jQuery
 app.use('/js', express.static(__dirname + '/../node_modules/gpxparser/dist/')); // redirect JS jQuery
+app.use('/js', express.static(__dirname + '/../node_modules/moment/min')); // redirect JS jQuery
 
 app.use('/css', express.static(__dirname + '/../public/css')); // redirect CSS bootstra
 app.use('/public', express.static(__dirname + '/../public')); // redirect CSS bootstra

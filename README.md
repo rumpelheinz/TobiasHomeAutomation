@@ -11,7 +11,7 @@ Public Website:[https://tobias.eu.ngrok.io/](https://tobias.eu.ngrok.io/)
 Music player on port 6680: [http://192.168.1.100:6680/](http://192.168.1.100:6680/)
 
 # 2 Features & technologies used
-
+![Diagram](Readme/Diagram.png)
 ## 2.1 Webinterface
 ### 2.1.1 Music & Room Control
 The [/player](https://tobias.eu.ngrok.io/player) route is the interface for controlling the room. 
@@ -48,11 +48,11 @@ The system uses a raspberry pi 3 to host the website, interface with the arduino
 All development happens over ssh. The Visual Studio Code ssh plugin offers plenty of functionality, and by now I rarely miss having a monitor connected to the pi. 
 ![Screenshot VSCode](Readme/VSCode.png)
 
-In order to automatically run the server, the scripts are run as a linux service. Using the journalctl command, you can review the logs for crashes, as well as monitor the script while it is running. The systemctl command allows you to restart the service while developing, and keeps everything running even when the ssh connection is closed. (See [service](#))
+In order to automatically run the server, the scripts are run as a linux service. Using the journalctl command, you can review the logs for crashes, as well as monitor the script while it is running. The systemctl command allows you to restart the service while developing, and keeps everything running even when the ssh connection is closed. (See [Services](#7-services))
 
 In addition to using a service, typescript is used for the main app, nodemon is used to recompile the script and restart it whenever the source files change. The configurations for this are in the package.json, nodemon.json, and the tsconfig.json files.
 
-The code for the arduino is also compiled on the pi, using the [arduino-cli](https://www.arduino.cc/pro/cli) (See [arduino-over-ssh](#))
+The code for the arduino is also compiled on the pi, using the [arduino-cli](https://www.arduino.cc/pro/cli) (See [Arduino over SSH](#13-arduino-over-ssh))
 
 
 ### 2.2.2 Music 
@@ -99,17 +99,16 @@ Monitoring arduino
 `minicom -D /dev/ttyACM0 -b 9600`
 
 Compiling react scripts
-`npx babel --watch src --out-dir public/js/compiled/ --presets react-app/prod`
+`npx babel --watch reactsource --out-dir public/js/compiled/ --presets react-app/prod`
 
 # 4 Installation
-1. Set up the MySQL server (See [SQL](#8-sql)) 
-
-1. `git clone https://github.com/rumpelheinz/TobiasHomeAutomation.git`
-2. Maybe update npm: `npm update` `npm install -g npm` as sudo
-3. `cd TobiasHomeAutomation`
-
-
-`npm install` , and proceed to 
+1. Set up the MySQL server (See [SQL](#8-sql))
+2. Set up Mopidy(see [Mopidy](#6-mopidy))
+2. `git clone https://github.com/rumpelheinz/TobiasHomeAutomation.git`
+3. Maybe update npm: `npm update`,  `npm install -g npm` as sudo
+4. `cd TobiasHomeAutomation`
+5. `npm install`
+6. `npm run start`
 
 
 
@@ -121,7 +120,7 @@ Compiling react scripts
 - [ ] Add moisture sensor to plant terrarium, and show data in webinterface.
 
 # 6 Mopidy
-To control mopidy with node js, the [Mopidy-MPD](https://pypi.org/project/Mopidy-MPD/) module has to be installed `sudo python3 -m pip install Mopidy-MPD`, and enabled on port 6610 (See the [config file](#))
+To control mopidy with node js, the [Mopidy-MPD](https://pypi.org/project/Mopidy-MPD/) module has to be installed `sudo python3 -m pip install Mopidy-MPD`, and enabled on port 6610 (See the [config file](#6.1-mopidy-config-file))
 
 Service at 
 [/etc/systemd/system/mopidyservice.service]()
@@ -307,7 +306,7 @@ Test sound :
 
 `aplay /usr/share/sounds/alsa/Front_Center.wav`
 
-# 7 Running as a service
+# 7 Services
 
 Service file at [/etc/systemd/system/homecontrol.service](file:///etc/systemd/system/homecontrol.service)
 
@@ -482,7 +481,7 @@ Copy public key to pi
 
 
 
-# 13 Arduino Remote
+# 13 Arduino over SSH
 
 [Infrared Sender and receiver](https://github.com/z3t0/Arduino-IRremote)
 
