@@ -28,13 +28,37 @@ background-size: cover;">
     <a href="flute.html"><img src="/images/flute2.svg" class="image-w bitmap-logo" />Recorder</a>
 
     <!-- <a href="https://kso.etjanster.lantmateriet.se/"><i class="fas fa-globe-europe"></i> Fjällkartan</a> -->
-    <a href="http://192.168.1.100:6680"><i class="fas fa-record-vinyl"></i> Mopidy</a>
+    <!-- <a href="http://localhost:6680"><i class="fas fa-record-vinyl"></i> Mopidy</a> -->
+    <a href="https://localhost:6680"><i class="fas fa-record-vinyl"></i> Mopidy</a>
+
+
     <a href="readme.html"><i class="fas fa-book-open"></i> Readme</i></a>
+    <script>
+      console.log("test");
+      function mycallback( data){
+        document.getElementById("localip").innerHTML=data;
+      }
+
+      function httpGetAsync(theUrl, callback){
+          var xmlHttp = new XMLHttpRequest();
+          xmlHttp.onreadystatechange = function() { 
+              if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                  callback(xmlHttp.responseText);
+          }
+          xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+          xmlHttp.send(null);
+      }
+      httpGetAsync("/pilocaladdress", mycallback);
+
+    </script>
 
   </div>
 
+
   <div class="row">
     <div class="column side">
+    <a id="localip" style="background-color:#ffffff60">0.0.0.0</a>  
+    <a href="http://tobiasangular.eu.ngrok.io/">Angular</a>
     </div>
 
     <div class="column middle">

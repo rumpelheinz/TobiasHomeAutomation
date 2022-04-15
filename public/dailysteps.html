@@ -23,13 +23,15 @@
     text-decoration: none;
     background-color: rgb(64, 77, 82);
   }
+
   #home :hover {
-  background-color: #ddd;
-  color: black;
-}
-#home a{
-  color:#f2f2f2
-}
+    background-color: #ddd;
+    color: black;
+  }
+
+  #home a {
+    color: #f2f2f2
+  }
 </style>
 
 <body>
@@ -49,7 +51,7 @@
 
 
 
-  <footer class="mediacontainer">
+  <footer class="mediacontainer" style="display:none">
     <div class="footer">
       <div class="footrow">
         <!-- <div class="spacer" /> -->
@@ -82,6 +84,8 @@
 
   <script>
     const socket = io.connect('/player');
+    socket2 = io.connect("/");
+    socket2.on("", data => console.log(data))
     socket.on('connect', function () {
 
     });
@@ -146,60 +150,121 @@
       fetch('/stepcounts')
         .then(res => res.json())
         .then((out) => {
-          console.log('Output: ', out);
-          // output.innerText = JSON.stringify(out);
 
-          steps = out.steps.reverse();
-          // labels = {};
-          labels = {};
-          let days = [];
-          let persons = {};
-          var arrayLength = steps.length;
-          for (var i = 0; i < arrayLength; i++) {
-            if ((new Date() - new Date(steps[i].Day)) / (1000 * 60 * 60 * 24) > 30) {
-
-              // console.log(new Date(steps[i].Day));
-              continue;
-            }
-            // if (!mydatasets[steps[i].name]){
-            //   mydatasets[steps[i].name]={label:steps[i].name, data: [], labels: []};
-            //   // mydatasets.labels.push(steps[i].name);
-            // }
-            if (!persons[steps[i].name]) {
-              persons[steps[i].name] = {
-                label: steps[i].name,
-                data: [],
-                // backgroundColor: "green",
-
-                backgroundColor: colorArray[colorindex],
-                borderColor: colorArray[colorindex],
-                borderWidth: 1
-              }
+          {
+            let data = out;
+            let personData = {};
+            let colorindex = 0;
+            for (let updatei in data.updates) {
+              console.log(updatei);
+              let name = data.updates[updatei].name;
+              console.log(name);
+              personData[name] = data.updates[updatei];
+              personData[name].stepdata = [];
+              personData[name].backgroundColor= colorArray[colorindex];
+              personData[name].borderColor= colorArray[colorindex];
+              personData[name].borderWidth= 1;
               colorindex++;
             }
-            if (!days.includes(steps[i].Day)) {
-              days.push(steps[i].Day)
+            console.log(personData);
+            // {
+            // Thanh: {name: 'Thanh',stepData , steps: 0, firstupdate: '2021-03-15T18:50:08.000Z', lastupdate: '2021-11-18T00:41:50.000Z'}
+            // Theresa: {name: 'Theresa', steps: 78, firstupdate: '2021-02-23T20:43:12.000Z', lastupdate: '2021-12-07T23:48:29.000Z'}
+            // Tobias: {name: 'Tobias', steps: 635, firstupdate: '2021-02-23T12:25:53.000Z', lastupdate: '2021-11-10T15:01:28.000Z'}
+            // }['Thanh']
+
+            // {Day: '2021-12-08', Steps: 78, name: 'Theresa'}
+            let labels = [];
+            let currentDay = undefined;
+            for (let dayI in data.steps) {
+              let stepD = data.steps[dayI];
+              if (currentDay !== stepD.Day) {
+                currentDay = stepD.Day;
+                labels.push(currentDay);
+                for (let i in personData) {
+                  personData[i].stepdata.push(0);
+                }
+              }
+              let length = personData[stepD.name].stepdata.length;
+              personData[stepD.name].stepdata[length - 1] = stepD.Steps;
             }
-            persons[steps[i].name].data.push(steps[i].Steps)
-            // mydatasets[steps[i].name].data.push(steps[i].Steps)
-            // mydatasets[steps[i].name].labels.push(steps[i].Day)
-            //            console.log(steps[i]);
-            // if (steps[i].Steps > 0) {
-            //   labels.push(steps[i].Day);
-            //   data.push(steps[i].Steps)
-            //   // backgroundcolor.push('rgba(255, 99, 132, 1)')
-            //   // bordercolor.push('rgba(255, 99, 132, 1)')
-            // }
+            let datasets = [];
+            for (let i in personData) {
+              datasets.push({
+                data: personData[i].stepdata,
+                label: personData[i].name,// + "\n(" + this.timeSince(new Date(personData[i].lastupdate)) + " ago)"
+                backgroundColor: personData[i].backgroundColor,
+                borderColor: personData[i].borderColor,
+                borderWidth: personData[i].borderWidth
+              }
+              )
+            }
+            myChart.data =barChartData = {
+              labels: labels,
+              datasets: datasets
+            };
+            console.log(myChart.data);
 
           }
-          // console.log(mydatasets);
-          datasets = [];
-          for (let i in persons) {
 
-            // console.log(days[i]);
-            datasets.push(persons[i]);
+          if (false) {
+            console.log('Output: ', out);
+            // console.log('Output: ', u;
+            // output.innerText = JSON.stringify(out);
+
+            let steps = out.steps.reverse();
+            // labels = {};
+            labels = {};
+            let days = [];
+            let persons = {};
+            var arrayLength = steps.length;
+            for (var i = 0; i < arrayLength; i++) {
+              if ((new Date() - new Date(steps[i].Day)) / (1000 * 60 * 60 * 24) > 365) {
+
+                // console.log(new Date(steps[i].Day));
+                continue;
+              }
+              // if (!mydatasets[steps[i].name]){
+              //   mydatasets[steps[i].name]={label:steps[i].name, data: [], labels: []};
+              //   // mydatasets.labels.push(steps[i].name);
+              // }
+              if (!persons[steps[i].name]) {
+                persons[steps[i].name] = {
+                  label: steps[i].name,
+                  data: [],
+                  // backgroundColor: "green",
+
+                  backgroundColor: colorArray[colorindex],
+                  borderColor: colorArray[colorindex],
+                  borderWidth: 1
+                }
+                colorindex++;
+              }
+              if (!days.includes(steps[i].Day)) {
+                days.push(steps[i].Day)
+              }
+              persons[steps[i].name].data.push(steps[i].Steps)
+              // mydatasets[steps[i].name].data.push(steps[i].Steps)
+              // mydatasets[steps[i].name].labels.push(steps[i].Day)
+              //            console.log(steps[i]);
+              // if (steps[i].Steps > 0) {
+              //   labels.push(steps[i].Day);
+              //   data.push(steps[i].Steps)
+              //   // backgroundcolor.push('rgba(255, 99, 132, 1)')
+              //   // bordercolor.push('rgba(255, 99, 132, 1)')
+              // }
+
+            }
+            // console.log(mydatasets);
+            datasets = [];
+            for (let i in persons) {
+
+              // console.log(days[i]);
+              datasets.push(persons[i]);
+            }
+            console.log(datasets);
+            console.log(persons);
           }
-          console.log(datasets);
 
 
           // [
@@ -213,11 +278,11 @@
 
           // var xScale = myChart.scales['x-axis-0'];
           // var yScale = myChart.scales['y-axis-0'];
-          myChart.data = {
-            datasets: datasets,
-            labels: days
-          };
-          console.log(days)
+          // myChart.data = {
+          //   datasets: datasets,
+          //   labels: days
+          // };
+          // console.log(days)
           //           myChart.data={
           //   labels: days,
           //   datasets: [{

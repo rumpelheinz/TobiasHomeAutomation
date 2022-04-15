@@ -11,7 +11,7 @@ Public Website:[https://tobias.eu.ngrok.io/](https://tobias.eu.ngrok.io/)
 Music player on port 6680: [http://192.168.1.100:6680/](http://192.168.1.100:6680/)
 
 # Features & technologies used
-
+![Diagram](Readme/Diagram.png)
 ## Webinterface
 ### Music & Room Control
 The [/player](https://tobias.eu.ngrok.io/player) route is the interface for controlling the room. 
@@ -48,11 +48,11 @@ The system uses a raspberry pi 3 to host the website, interface with the arduino
 All development happens over ssh. The Visual Studio Code ssh plugin offers plenty of functionality, and by now I rarely miss having a monitor connected to the pi. 
 ![Screenshot VSCode](Readme/VSCode.png)
 
-In order to automatically run the server, the scripts are run as a linux service. Using the journalctl command, you can review the logs for crashes, as well as monitor the script while it is running. The systemctl command allows you to restart the service while developing, and keeps everything running even when the ssh connection is closed. (See [service](#Running as a service))
+In order to automatically run the server, the scripts are run as a linux service. Using the journalctl command, you can review the logs for crashes, as well as monitor the script while it is running. The systemctl command allows you to restart the service while developing, and keeps everything running even when the ssh connection is closed. (See [Services](#Services))
 
 In addition to using a service, typescript is used for the main app, nodemon is used to recompile the script and restart it whenever the source files change. The configurations for this are in the package.json, nodemon.json, and the tsconfig.json files.
 
-The code for the arduino is also compiled on the pi, using the [arduino-cli](https://www.arduino.cc/pro/cli) (See [arduino-over-ssh](#arduino-over-ssh))
+The code for the arduino is also compiled on the pi, using the [arduino-cli](https://www.arduino.cc/pro/cli) (See [Arduino over SSH](#arduino over ssh))
 
 
 ### Music 
@@ -99,17 +99,16 @@ Monitoring arduino
 `minicom -D /dev/ttyACM0 -b 9600`
 
 Compiling react scripts
-`npx babel --watch src --out-dir public/js/compiled/ --presets react-app/prod`
+`npx babel --watch reactsource --out-dir public/js/compiled/ --presets react-app/prod`
 
 # Installation
-1. Set up the MySQL server (See [SQL](#SQL)) 
-
-1. `git clone https://github.com/rumpelheinz/TobiasHomeAutomation.git`
-2. Maybe update npm: `npm update` `npm install -g npm` as sudo
-3. `cd TobiasHomeAutomation`
-
-
-`npm install` , and proceed to 
+1. Set up the MySQL server (See [SQL](#SQL))
+2. Set up Mopidy(see [Mopidy](#Mopidy))
+2. `git clone https://github.com/rumpelheinz/TobiasHomeAutomation.git`
+3. Maybe update npm: `npm update`,  `npm install -g npm` as sudo
+4. `cd TobiasHomeAutomation`
+5. `npm install`
+6. `npm run start`
 
 
 
@@ -121,7 +120,7 @@ Compiling react scripts
 - [ ] Add moisture sensor to plant terrarium, and show data in webinterface.
 
 # Mopidy
-To control mopidy with node js, the [Mopidy-MPD](https://pypi.org/project/Mopidy-MPD/) module has to be installed `sudo python3 -m pip install Mopidy-MPD`, and enabled on port 6610 (See the [config file](#mopidy config file))
+To control mopidy with node js, the [Mopidy-MPD](https://pypi.org/project/Mopidy-MPD/) module has to be installed `sudo python3 -m pip install Mopidy-MPD`, and enabled on port 6610 (See the [config file](#Mopidy config file))
 
 Service at 
 [/etc/systemd/system/mopidyservice.service]()
@@ -307,7 +306,7 @@ Test sound :
 
 `aplay /usr/share/sounds/alsa/Front_Center.wav`
 
-# Running as a service
+# Services
 
 Service file at [/etc/systemd/system/homecontrol.service](file:///etc/systemd/system/homecontrol.service)
 
@@ -340,6 +339,8 @@ Enable:
 
 Get logs:
 `journalctl -u homecontrol -f`
+
+Nginx: `sudo vim /etc/nginx/conf.d/angularhttp.conf`
 
 
 # SQL
@@ -446,14 +447,15 @@ Programming: [https://siytek.com/arduino-cli-raspberry-pi/#Install_Arduinocli](h
 `arduino-cli compile --fqbn arduino:avr:mega infohub/`
 
 `arduino-cli upload -v -p /dev/ttyUSB0 -b arduino:avr:nano:cpu=atmega328old infohub/`
-
+`arduino-cli compile --fqbn arduino:avr:nano:cpu=atmega328 DeskCycle/`
 arduino:avr:mega
 
 `arduino-cli upload -v -p /dev/ttyACM0 -b arduino:avr:mega infohub/`
+
                           
 
-`arduino-cli compile --fqbn arduino:avr:mega infohub/ &&
-arduino-cli upload -v -p /dev/ttyACM0 -b arduino:avr:mega infohub/`
+`arduino-cli compile --fqbn arduino:avr:mega infohub/ && arduino-cli upload -v -p /dev/ttyACM0 -b arduino:avr:mega infohub/`
+
 
 `screen /dev/ttyUSB0`
 (kill with ctrl-a k)
@@ -482,7 +484,7 @@ Copy public key to pi
 
 
 
-# Arduino Remote
+# Arduino over SSH
 
 [Infrared Sender and receiver](https://github.com/z3t0/Arduino-IRremote)
 
@@ -511,3 +513,6 @@ if ( on) {
 
 # Links
 Bluetooth audio receiver: [https://github.com/nicokaiser/rpi-audio-receiver](https://github.com/nicokaiser/rpi-audio-receiver)
+
+# Kiosk Mode Chrome 
+[Kiosk Mode](https://www.stoffl.info/2020/03/25/how-to-raspberry-pi-chromium-kiosk-mode-autostart-und-vollbildmodus/)

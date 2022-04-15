@@ -1,0 +1,80 @@
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+<a href="http://192.168.0.140/debug/clip.html"></a>
+
+<a href='/obj/Tobiasbroken2.obj'> File</a>
+<script src="/js/lib/three.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stl-loader@1.0.0/STLLoader.min.js"></script>
+
+<script>
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const geometry = new THREE.BoxGeometry();
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    scene.add(cube);
+
+    camera.position.z = 5;
+    document.body.appendChild(renderer.domElement);
+
+
+    function animate() {
+        cube.rotation.x += 0.01;
+        cube.rotation.y += 0.01;
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+    }
+    animate();
+    const loader = new THREE.STLLoader()
+    loader.load(
+        '/obj/Tobiasbroken2.stl',
+        function (geometry) {
+            const mesh = new THREE.Mesh(geometry, material)
+            scene.add(mesh)
+        },
+        (xhr) => {
+            console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+        },
+        (error) => {
+            console.log(error)
+        }
+    )
+
+
+    // Alternatively, to parse a previously loaded JSON structure
+    const object = loader.parse(a_json_object);
+
+    scene.add(object);
+
+
+// let loader = new THREE.GLTFLoader();
+// loader.load('scene.gltf', function(gltf){
+//   car = gltf.scene.children[0];
+//   car.scale.set(0.5,0.5,0.5);
+//   scene.add(gltf.scene);
+//   animate();
+// });
+
+
+//     function post(url,data) {
+
+//         return fetch(url, {
+//             method: "POST", headers: { 
+//                 'Content-Type': 'application/json',
+//                 'Access-Control-Allow-Credentials': 'true'
+
+//          },
+//          referrerPolicy: "no-referrer"
+//          ,
+//             body: data
+//         });
+
+//     }
+// console.log(post('http://192.168.0.140/api',{"devicetype":"my_hue_app#tobias"}));
+
+// "HE-iXMU7uUkEoGq318bFj6S7xHTnXHKbYkx3Xe4w"
+</script>
